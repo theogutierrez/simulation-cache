@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @author pedago
  */
-public class SimulationCache {
+public class SimulationCacheAssociatif {
 
     /**
      * @param args the command line arguments
@@ -28,11 +28,15 @@ public class SimulationCache {
     
     public static final int NBLIGNES = (int) pow(2,N);
     
+    public static final int NBENTREES = 2;
+    
     public static void main(String[] args) {
         
-        int cache[] = new int[NBLIGNES];
+        int cache[][] = new int[NBLIGNES][NBENTREES];
         
-        boolean visite[] = new boolean[NBLIGNES];
+        boolean visite[][] = new boolean[NBLIGNES][NBENTREES];
+         
+        int lRU[][] = new int[NBLIGNES][NBENTREES];
         
         for (int i = 0 ; i < visite.length ; i++){
             visite[i] = false; 
@@ -44,6 +48,7 @@ public class SimulationCache {
         int nbSucces = 0;
         int nbEchecs = 0;
         int tempsExecution = 0;
+        int indicateurTemps = 0;
         try {
             Scanner scan = new Scanner(new File("alea10.txt"));
             while (scan.hasNextLine()) { 
