@@ -24,11 +24,13 @@ public class SimulationCacheAssociatif {
     
     public static final int TAILLEBLOC = 32;
     
-    public static final int N = 2;
+    public static final int N = 3;
     
     public static final int NBLIGNES = (int) pow(2,N);
     
-    public static final int NBENTREES = 2;
+    public static final int B = 1;
+    
+    public static final int NBENTREES = (int) pow(2,B);
     
     public static void main(String[] args) {
         
@@ -39,18 +41,22 @@ public class SimulationCacheAssociatif {
         int lRU[][] = new int[NBLIGNES][NBENTREES];
         
         for (int i = 0 ; i < visite.length ; i++){
-            visite[i] = false; 
+            for (int j = 0 ; j < NBENTREES ; j++){
+                visite[i][j] = false; 
+            }    
         }
         
         int nbBitsDeplacement = 5;
         
         int nbBitsNumLigne = N;
+        
         int nbSucces = 0;
         int nbEchecs = 0;
         int tempsExecution = 0;
         int indicateurTemps = 0;
+        int k=0;
         try {
-            Scanner scan = new Scanner(new File("alea10.txt"));
+            Scanner scan = new Scanner(new File("matrice10.txt"));
             while (scan.hasNextLine()) { 
                 String s = scan.nextLine();
                 String[] ligne = s.split(":");
@@ -60,19 +66,43 @@ public class SimulationCacheAssociatif {
                 int reste = (int) (valeur / pow(2,nbBitsDeplacement));
                 int numLigne = (int) (reste % pow(2,nbBitsNumLigne));
                 int etiquette = (int) (reste / pow(2,nbBitsNumLigne));
-                System.out.println("adresse: "+valeur);
-                System.out.println("dep: "+deplacement);
-                System.out.println("numLigne: "+numLigne);
-                System.out.println("etiquette: "+etiquette);
-                if (visite[numLigne] == false || cache[numLigne] != etiquette) {
-                    visite[numLigne] = true;
-                    nbEchecs++;;
-                    cache[numLigne] = etiquette;
+//                System.out.println("adresse: "+valeur);
+//                System.out.println("dep: "+deplacement);
+//                System.out.println("numLigne: "+numLigne);
+//                System.out.println("etiquette: "+etiquette);
+                
+                k = 0;
+                while(k<NBENTREES) {
+                    if (visite[numLigne][k] == false) {
+                        visite[numLigne][k] = true;
+                        nbEchecs++;
+                        cache[numLigne][k] = etiquette;
+                        tempsExecution += 50;
+                        lRU[numLigne][k] = indicateurTemps;
+                        break;
+                    } else if(cache[numLigne][k] == etiquette) {
+                        nbSucces++;
+                        tempsExecution += 5;
+                        lRU[numLigne][k] = indicateurTemps;
+                        break;
+                    } 
+                    k++;
+                }
+                if (k==NBENTREES) {
+                    int place = 0;
+                    int t = 99999999;
+                    for (int j=0; j<k; j++) {
+                        if (lRU[numLigne][j] < t) {
+                            t=lRU[numLigne][j]; 
+                            place = j;
+                        }
+                    }
+                    cache[numLigne][place] = etiquette;
+                    nbEchecs++;
                     tempsExecution += 50;
-                } else {
-                    nbSucces++;
-                    tempsExecution += 5;
-                } 
+                }
+                
+                indicateurTemps++;
             } 
             scan.close();
             System.out.println("nbSucces: "+nbSucces);
