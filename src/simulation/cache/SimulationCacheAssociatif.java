@@ -24,7 +24,7 @@ public class SimulationCacheAssociatif {
     
     public static final int TAILLEBLOC = 32;
     
-    public static final int N = 3;
+    public static final int N = 4;
     
     public static final int NBLIGNES = (int) pow(2,N);
     
@@ -56,7 +56,7 @@ public class SimulationCacheAssociatif {
         int indicateurTemps = 0;
         int k=0;
         try {
-            Scanner scan = new Scanner(new File("matrice10.txt"));
+            Scanner scan = new Scanner(new File("matrice100.txt"));
             while (scan.hasNextLine()) { 
                 String s = scan.nextLine();
                 String[] ligne = s.split(":");
@@ -98,6 +98,7 @@ public class SimulationCacheAssociatif {
                         }
                     }
                     cache[numLigne][place] = etiquette;
+                    lRU[numLigne][place] = indicateurTemps;
                     nbEchecs++;
                     tempsExecution += 50;
                 }
